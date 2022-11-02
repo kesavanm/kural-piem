@@ -1,0 +1,100 @@
+<?php
+    /************** குறள் தேடல் : பையம்  π PIEM *******************
+
+     * auth: கேசவன்
+     * date: பொழுதுகழியா நாள்
+     * நன்றி : https://github.com/jskswamy/dailykural (For the CSV format)
+     * 
+     **********************************************************************/
+
+
+define('அதிகபட்ச_வார்த்தைகள்',7);
+
+class பாடல் {
+    protected $குறள்         = '';
+    protected $பாடல்        = '';
+    protected $அச்சு_வடிவு   = [];
+    protected $வார்த்தைகள்  = [];
+    protected $பதிவு         = 0;         # log
+    protected $π_இலக்கங்கள் = [3,1,4,1,5,9,2,6];
+    #π(pi) = 3.141592 65358979 3238462643383279502884197169399375105820974944592307816406286208998628034825342117067
+
+    public function __construct($பாட்டு){
+        $this->குறள்_கொடு($பாட்டு);
+    }
+
+    protected function குறள்_கொடு($பாட்டு){          #setKural
+        $this->குறள் = preg_replace('/\./','',$பாட்டு);
+        $this->குறள் = trim(preg_replace('/\s+/', ' ',$this->குறள்));      
+    }
+
+    protected function குறள்_எடு(){                   #getKural
+        return $this->குறள்;
+    }
+
+    protected function குறள்_உடைத்து_சோதி(){       #validateKural
+        $this->வார்த்தைகள் = explode(' ', $this->பாடல்);   #break 
+        return sizeof($this->வார்த்தைகள்)==அதிகபட்ச_வார்த்தைகள்?true:false;
+    }
+
+    protected function குறள்_திருப்பு(){                #reverseKural
+        return implode(' ',array_reverse(explode(' ',$this->குறள்)));
+    }
+
+    public function பாடல்_பையமா(){                 #isKuralPiem
+        $this->பாடல்_பகு($this->குறள்);
+        $this->பாடல்_பகு($this->குறள்_திருப்பு());     // try luck over reversal way as well
+    }
+
+    protected function பாடல்_பகு($பாட்டு){
+        $this->பாடல் = $பாட்டு;
+        if($this->குறள்_பையம்_சோதனை()){
+            echo "வெற்றி! இந்த பாடல் பையம் (#PIEM) :\n";
+            echo "உள்ளீடு: ==========>".$this->குறள்_எடு()."<==========\n";
+            print_r($this->அச்சு_வடிவு);
+        }else{
+            // echo "பாடல் doesn't match Piem\n";
+        }
+    }
+
+    protected function குறள்_பையம்_சோதனை(){
+        if(!$this->குறள்_உடைத்து_சோதி()){
+           if($this->பதிவு) echo "WARNING: This appears doesn't a valid குறள்! Continuing...\n";
+        };
+        
+        unset($this->அச்சு_வடிவு);
+        $varthaigalSliced = array_slice($this->வார்த்தைகள், 0, sizeof($this->π_இலக்கங்கள்));
+
+        foreach ($varthaigalSliced as $location => $வார்த்தை) {
+            $வார்த்தை= trim($வார்த்தை,',');
+
+            $regex = "/\pL\pM*|./u";//Unicode letter & Unicode Mark     # Thanks: https://stackoverflow.com/questions/28582596
+            preg_match_all($regex, $வார்த்தை, $varthai_out);
+            $வார்த்தை_நீளம் = count($varthai_out[0]);
+
+            $this->அச்சு_வடிவு[] = $வார்த்தை_நீளம்." : ".$வார்த்தை ;
+
+            if($this->π_இலக்கங்கள்[$location] == $வார்த்தை_நீளம்){
+                $isSuccess[$location] = true  ;
+                continue;
+            }else{
+                $isSuccess[$location] = false  ;
+            }
+        }
+
+        return array_product($isSuccess);
+    }
+}
+# Thou a beautiful poem π , just at look - tiggers 
+# hot love, you never change great constant ! 
+$மாதிரி = " கவிதை நீ ஆகிறாய் பை, கண்டதும்         
+            காதல்தூண்டிவிடும் மாறா மாறிலிநீயடி";
+$பாடல் = new பாடல்($மாதிரி);
+$பாடல்->பாடல்_பையமா();
+
+$குறள்கள் = file('குறள்.txt');       
+foreach($குறள்கள் as $குறள் ){
+    $பாடல் = new பாடல்($குறள்);
+    $பாடல்->பாடல்_பையமா();
+}
+?>
