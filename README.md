@@ -20,4 +20,4 @@ Array
 )
 ```
 
-![piem-img](../kural-piem/piem.php.png)
+![piem-img](./piem.php.png)
