@@ -1,5 +1,6 @@
 {
     "name": "kesavanm/kural-piem",
+    "type": "library",
     "description": "A mini lib to handle kurals",
     "keywords": ["tamil", "thirukural", "valluvar", "kural"],
     "authors": [
@@ -9,5 +10,7 @@
         }
     ],
     "license": "GPL-3.0-or-later",
-    "require": {}
+    "require": {
+       "php": ">=7.2"
+    }
 }
