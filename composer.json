@@ -1,0 +1,16 @@
+{
+    "name": "kesavanm/kural-piem",
+    "description": "A mini lib to handle kurals",
+    "keywords": ["tamil", "thirukural", "valluvar", "kural"],
+    "authors": [
+        {
+            "name": "Kesavan Muthuvel",
+            "email": "hi@kesavan.info"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0" 
+    },
+    "require-dev": {}
+}
