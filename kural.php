@@ -42,18 +42,38 @@ class பாடல் {
     }
 
     public function பாடல்_பையமா(){                 #isKuralPiem
-        $this->பாடல்_பகு($this->குறள்);
-        $this->பாடல்_பகு($this->குறள்_திருப்பு());     // try luck over reversal way as well
+        return $this->பாடல்_பகு($this->குறள்)??$this->பாடல்_பகு($this->குறள்_திருப்பு()) ;
+        // return ;     // try luck over reversal way as well
     }
 
     protected function பாடல்_பகு($பாட்டு){
         $this->பாடல் = $பாட்டு;
         if($this->குறள்_பையம்_சோதனை()){
-            echo "வெற்றி! இந்த பாடல் பையம் (#PIEM) :\n";
-            echo "உள்ளீடு: ==========>".$this->குறள்_எடு()."<==========\n";
-            print_r($this->அச்சு_வடிவு);
+            $return['state'] = "வெற்றி! இந்த பாடல் பையம் (#PIEM)";
+            $return['உள்ளீடு'] = $this->குறள்_எடு();
+            $return['log'] = $this->அச்சு_வடிவு;
         }else{
+            $return = NULL;
             // echo "பாடல் doesn't match Piem\n";
+        }
+        return $return;
+    }
+
+    public function பாடல்_break(){
+        // return preg_replace('~((\w+\s){4})~', '$1' . "<br>\n", $this->குறள்);
+        $return ='';
+        $arr = explode (" " , $this->குறள்);
+        $lines = array_chunk($arr,4);
+        foreach($lines as $line) 
+            $return .= implode (" ", $line)."<br>\r\n";
+            return $return;
+    }
+
+    public function பாடல்_தேடல்($வார்த்தை){
+        if(str_contains($this->குறள், $வார்த்தை)){
+            return $this->குறள்;
+        }else {
+            return FALSE;   # code...
         }
     }
 
